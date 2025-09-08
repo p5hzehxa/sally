@@ -5,11 +5,12 @@ sally.core.basing module
 
 Database support
 """
-from keri import help
 from keri.core import coring, serdering
 from keri.db import dbing, subing
 
-logger = help.ogler.getLogger()
+from sally import log_name, ogler
+
+logger = ogler.getLogger(log_name)
 
 class CueBaser(dbing.LMDBer):
     """

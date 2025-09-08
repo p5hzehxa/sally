@@ -4,14 +4,14 @@ sally.cli.commands module
 
 """
 import argparse
-import logging
 import os
 
-from keri import help
-from keri.app import keeping, habbing, directing, configing, oobiing
+from hio.base import doing
+from keri.app import keeping, habbing, configing
 from keri.app.cli.common import existing
 
 import sally
+from sally import ogler, log_name, set_log_level
 from sally.core import serving
 
 parser = argparse.ArgumentParser(description='Launch Sally vLEI credential presentation receiver service.')
@@ -64,19 +64,15 @@ parser.add_argument(
     "-l", "--loglevel", action="store", required=False, default=os.getenv("SALLY_LOG_LEVEL", "INFO"),
     help="Set log level to DEBUG | INFO | WARNING | ERROR | CRITICAL. Default is CRITICAL")
 
-help.ogler.level = logging.getLevelName(logging.INFO)
-logger = help.ogler.getLogger()
+
+logger = ogler.getLogger(log_name)
 
 def launch(args, expire=0.0):
     """Launch Sally vLEI credential presentation receiver service"""
     # Logging config
-    base_formatter = logging.Formatter('%(asctime)s [sally] %(levelname)-8s %(message)s')
-    base_formatter.default_msec_format = None
-    help.ogler.baseConsoleHandler.setFormatter(base_formatter)
-    help.ogler.level = logging.getLevelName(args.loglevel.upper())
-    logger.setLevel(help.ogler.level)
-    help.ogler.reopen(name="sally", temp=True, clear=True)
+    set_log_level(args.loglevel, logger)
 
+    # Parse arguments
     hook = args.web_hook
     name = args.name
     salt = args.salt

@@ -12,8 +12,7 @@ from base64 import urlsafe_b64encode as encodeB64
 
 from hio.core import http
 from hio.help import decking
-from keri import help
-from keri.app import indirecting, storing, notifying
+from keri.app import indirecting, storing, notifying, habbing, oobiing
 from keri.app.cli.commands import incept
 from keri.core import routing, eventing, parsing
 from keri.end import ending
@@ -22,11 +21,13 @@ from keri.vdr import viring, verifying
 from keri.vdr.eventing import Tevery
 from keri.vc import protocoling
 
+from sally import ogler, log_name
 from sally.core import handling, basing, monitoring, httping
 from sally.core.credentials import TeveryCuery
 from sally.core.verifying import VerificationAgent
 
 logger = help.ogler.getLogger()
+logger = ogler.getLogger(log_name)
 
 def setup(hby, *, alias, httpPort, hook, auth, timeout=10, retry=3, direct=True, incept_args=None):
     """

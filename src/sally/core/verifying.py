@@ -1,9 +1,9 @@
 from hio.base import doing
 from hio.help import decking
-from keri import help
+from sally import ogler, log_name
 
 
-logger = help.ogler.getLogger()
+logger = ogler.getLogger(log_name)
 
 
 class VerificationAgent(doing.DoDoer):
