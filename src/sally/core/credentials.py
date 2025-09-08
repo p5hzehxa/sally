@@ -1,9 +1,10 @@
 from hio.base import doing
 from hio.help import decking
 from keri.core import coring
-from keri import help
 
-logger = help.ogler.getLogger()
+from sally import ogler, log_name
+
+logger = ogler.getLogger(log_name)
 
 
 class TeveryCuery(doing.Doer):

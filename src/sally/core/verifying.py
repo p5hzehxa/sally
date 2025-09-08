@@ -1,9 +1,9 @@
 from hio.base import doing
 from hio.help import decking
-from keri import help
+from sally import ogler, log_name
 
 
-logger = help.ogler.getLogger()
+logger = ogler.getLogger(log_name)
 
 
 class VerificationAgent(doing.DoDoer):
@@ -13,16 +13,27 @@ class VerificationAgent(doing.DoDoer):
     Indirect mode is used when presenting to the reporting agent via a mailbox whether from a witness or a mailbox agent.
     """
 
-    def __init__(self, hab, parser, kvy, tvy, rvy, exc, cues=None, **opts):
+    def __init__(self, hab, parser, kvy, tvy, rvy, verifier, exc, cues=None, **opts):
         """
         Initializes the ReportingAgent with an identifier (Hab), parser, KEL, TEL, and Exchange message processor
         so that it can process incoming credential presentations.
+
+        Parameters:
+            hab (Hab): The identifier (Hab) for the reporting agent.
+            parser (Parser): The message parser to handle incoming messages.
+            kvy (Kevery): The KEL message processor for handling key events.
+            tvy (Tevery): The TEL message processor for handling registry and credential events.
+            rvy (Revery): The Reply message processor for handling location, endrole, and other reply of messages.
+            verifier (Verifier): The Credential processor for handling credential escrows.
+            exc (Exchanger): The Exchanger for managing exchange messages.
+            cues (Deck, optional): A data buffer for inter-component communication cues. Defaults to an empty deck
         """
         self.hab = hab
         self.parser = parser
         self.kvy = kvy
         self.tvy = tvy
         self.rvy = rvy
+        self.verifier = verifier
         self.exc = exc
         self.cues = cues if cues is not None else decking.Deck()
         doers = [doing.doify(self.msgDo), doing.doify(self.escrowDo)]
@@ -56,6 +67,8 @@ class VerificationAgent(doing.DoDoer):
             self.rvy.processEscrowReply()
             if self.tvy is not None:
                 self.tvy.processEscrows()
+            if self.verifier is not None:
+                self.verifier.processEscrows()
             self.exc.processEscrow()
 
             yield

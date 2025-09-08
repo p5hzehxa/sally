@@ -12,10 +12,11 @@ from hio.core import http
 from keri import help
 from keri.app import directing
 
+from sally import log_name, ogler
 from sally.core import handling, httping
 from sally.core.monitoring import HealthEnd
 
-logger = help.ogler.getLogger()
+logger = ogler.getLogger(log_name)
 
 parser = argparse.ArgumentParser(description='Launch SALLY sample web hook server')
 parser.set_defaults(handler=lambda args: launch(args),

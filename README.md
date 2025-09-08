@@ -9,13 +9,22 @@ webhook URL.
 
 The below `sally server start` command shows how to use Sally, once it has been set up (see below for setup instructions).
 
+Make sure to use the `--direct` argument to start the server up in direct agent mode. This means that the agent will listen on the specified, or default 9723, HTTP port
+for direct HTTP requests. The alternate is to use indirect mode by omitting `--direct` which will cause Sally to rely on any configured witnesses as a communication mailbox (relay).
+
 ```bash
 sally server start \
-  --name sally --alias sally \
+  --direct \
+  --http 9723 \
   --salt 0AD45YWdzWSwNREuAoitH_CC \
+  --name sally \
+  --alias sally \
+  --config-dir scripts \
+  --config-file sally.json \
+  --incept-file sally-incept.json \
   --passcode VVmRdBTe5YCyLMmYRqTAi \
   --web-hook http://127.0.0.1:9923 \
-  --auth EMHY2SRWuqcqlKv2tNQ9nBXyZYqhJ-qrDX70faMcGujF
+  --auth EMCRBKH4Kvj03xbEVzKmOIrg0sosqHUF9VG2vzT9ybzv \
   --loglevel INFO
 ```
 
@@ -205,12 +214,34 @@ KERI_SCRIPT_DIR=./scripts KERI_DEMO_SCRIPT_DIR=./scripts/demo ./scripts/demo/vLE
 Now that you have a sample vLEI ecosystem running you will need to configure and run the Sally server.  
 
 In order to start Sally you will need to either:
-1. Use the `kli init` and `kli incept` commands to create an AID for Sally to use.
-2. (Not yet working) Use the `--incept-file` and `--salt` arguments to instruct the `sally server start` command to create a new identifier, or
+1. Use the `--config-file`, `--config-dir`, `--incept-file`, and `--salt` arguments to instruct the `sally server start` command to create a new identifier, or
+2. Use the `kli init` and `kli incept` commands to create and configure an AID for Sally to use.
 
 Both options require the following configuration files:
 
-### Option 1 - `kli` commands
+### Option 1 - `sally server start` command
+
+Example:
+```bash
+sally server start \
+  --direct \
+  --http 9723 \
+  --salt 0AD45YWdzWSwNREuAoitH_CC \
+  --name sally \
+  --alias sally \
+  --config-dir scripts \
+  --config-file sally.json \
+  --incept-file sally-incept.json \
+  --passcode VVmRdBTe5YCyLMmYRqTAi \
+  --web-hook http://127.0.0.1:9923 \
+  --auth EMCRBKH4Kvj03xbEVzKmOIrg0sosqHUF9VG2vzT9ybzv \
+  --loglevel INFO
+```
+
+You must specify both the keystore (Habery) configuration file and the identifier (Hab) inception file. The `--config-dir` argument applies to both the
+keystore and identifier files. For the keystore configuration the directory `keri/cf` is appended to the value of `--config-file` if it is not an absolute path.
+
+### Option 2 - `kli` commands
  
 Creating an identifier with the `kli init` and `kli incept` commands requires the following two commands to be run from an activated 
 Python virtual environment that has `keripy` configured to run so that the `kli` command is available. 
@@ -233,18 +264,14 @@ Finally, you can start (and leave running) the Sally server with:
 
 ```bash
 sally server start --name sally --alias sally --passcode VVmRdBTe5YCyLMmYRqTAi \
+  --http 9723 \
   --web-hook http://127.0.0.1:9923 \
   --auth EHOuGiHMxJShXHgSb6k_9pqxmRb8H-LT0R2hQouHp8pW
 ```
 
 If you require a sample web hook to receive the notifications from the Sally server one is provided in this repo.  You
 can run the sample hook server in a separate terminal with the following command. The above Sally command assumes this 
-server and port by default. 
-
-### Option 2 (not yet working) - `sally server start` command
-
-You must specify both the keystore (Habery) configuration file and the identifier (Hab) inception file. The `--config-dir` argument applies to both the
-keystore and identifier files. For the keystore configuration the directory `keri/cf` is appended to the value of `--config-file` if it is not an absolute path.
+server and port by default.
 
 #### Configuration Files
 
@@ -305,14 +332,17 @@ The following command will start the Sally server with a new identifier and salt
 
 ```bash
 sally server start \
-  --name sally --alias sally \
+  --direct \
+  --http 9723 \
   --salt 0AD45YWdzWSwNREuAoitH_CC \
+  --name sally \
+  --alias sally \
+  --config-dir scripts \
+  --config-file sally.json \
+  --incept-file sally-incept.json \
   --passcode VVmRdBTe5YCyLMmYRqTAi \
   --web-hook http://127.0.0.1:9923 \
-  --auth EMHY2SRWuqcqlKv2tNQ9nBXyZYqhJ-qrDX70faMcGujF
-  --config-dir scripts \
-  --config-file sally-habery.json \
-  --incept-file sally-incept.json \
+  --auth EMCRBKH4Kvj03xbEVzKmOIrg0sosqHUF9VG2vzT9ybzv \
   --loglevel INFO
 ```
 

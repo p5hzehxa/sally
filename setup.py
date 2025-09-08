@@ -11,7 +11,7 @@ Pypi Release
 $ pip3 install twine
 
 $ python3 setup.py sdist
-$ twine upload dist/keri-0.0.1.tar.gz
+$ twine upload dist/sally-0.0.1.tar.gz
 
 Create release git:
 $ git tag -a v0.4.2 -m "bump version"
@@ -39,10 +39,12 @@ else:
 
 setup(
     name='sally',
-    version='1.0.0-rc1',  # also change in src/sally/__init__.py
-    license='Apache Software License 2.0',
+    version='1.0.2',  # also change in src/sally/__init__.py
+    license='Apache-2.0',
+    license_files=('LICENSE',),
     description='vLEI Audit Reporting API',
     long_description=long_description,
+    long_description_content_type='text/markdown',
     author='Philip S. Feairheller',
     author_email='pfeairheller@gmail.com',
     url='https://github.com/GLEIF-IT/sally',
@@ -55,7 +57,6 @@ setup(
         # complete classifier list: http://pypi.python.org/pypi?%3Aaction=list_classifiers
         'Development Status :: 3 - Alpha',
         'Intended Audience :: Developers',
-        'License :: OSI Approved :: Apache Software License',
         'Operating System :: Unix',
         'Operating System :: POSIX',
         'Operating System :: Microsoft :: Windows',
@@ -78,7 +79,8 @@ setup(
     ],
     python_requires='>=3.12.3',
     install_requires=[
-        'cit-keri==1.2.8',
+        # This version of KERIpy uses the GLEIF-IT/keripy v1.2.8 branch as of the exn message fix
+        'keri @ git+https://github.com/GLEIF-IT/keripy.git@e881c9522b9bd38c5d5d5ef04f4e231eb902c36a',
         'hio==0.6.14',
         'multicommand==1.0.0',
         'blake3==0.4.1',
@@ -89,14 +91,6 @@ setup(
         'test': ['pytest', 'coverage', 'pytest-mock-server'],
         'docs': ['sphinx', 'sphinx-rtd-theme']
     },
-    tests_require=[
-        'coverage==7.7.1',
-        'pytest==8.3.5',
-        'pytest-mock-server==0.3.2'
-    ],
-    setup_requires=[
-        'setuptools==80.3.1'
-    ],
     entry_points={
         'console_scripts': [
             'sally = sally.app.cli.kli:main',

@@ -14,14 +14,16 @@ from urllib import parse
 from hio.base import doing, Doer
 from hio.core import http
 from hio.help import Hict
-from keri import help, kering
+from keri import kering
 from keri.core import coring
 from keri.peer import exchanging
 from keri.end import ending
 from keri.help import helping
+
+from sally import ogler, log_name
 from sally.core import httping
 
-logger = help.ogler.getLogger()
+logger = ogler.getLogger(log_name)
 
 # vLEI ACDC schema SAIDs
 QVI_SCHEMA = "EBfdlu8R27Fbx-ehrqwImnK-8Cm79sqbAQ4MmvEAYqao"

@@ -6,15 +6,17 @@ sally.core.serving module
 Endpoint service
 """
 import os
+from typing import List
 
 import falcon
 from base64 import urlsafe_b64encode as encodeB64
 
+from hio.base import doing, Doer
 from hio.core import http
 from hio.help import decking
-from keri import help
-from keri.app import indirecting, storing, notifying
+from keri.app import indirecting, storing, notifying, habbing, oobiing
 from keri.app.cli.commands import incept
+from keri.app.habbing import Habery, Hab
 from keri.core import routing, eventing, parsing
 from keri.end import ending
 from keri.peer import exchanging
@@ -22,13 +24,67 @@ from keri.vdr import viring, verifying
 from keri.vdr.eventing import Tevery
 from keri.vc import protocoling
 
+from sally import ogler, log_name
 from sally.core import handling, basing, monitoring, httping
 from sally.core.credentials import TeveryCuery
 from sally.core.verifying import VerificationAgent
 
-logger = help.ogler.getLogger()
+logger = ogler.getLogger(log_name)
 
-def setup(hby, *, alias, httpPort, hook, auth, timeout=10, retry=3, direct=True, incept_args=None):
+def incept_if_new(hby: Habery, alias: str, incept_args: dict):
+    """
+    Create an identifier with the specified alias if it does not exist.
+    This is run in a separate scheduler (Doist) prior to starting Sally so that the identifier can
+    exist and have all Habery configuration OOBIs resolved.
+
+    Warning: This only supports no witness, single sig identifiers as it is assumed it will be used
+        with the direct-mode verification agent.
+    """
+    if incept_args is None:
+        incept_args = {}
+    hab = hby.habByName(name=alias)
+    if hab is None:
+        # Incept the new Hab
+        if incept_args["incept_file"] is None:
+            raise ValueError("incept file by arg --incept-file is required to create a new identifier")
+        logger.info(f"Making new hab {alias} in Habery {incept_args.get('name', '')}")
+        hab = hby.makeHab(name=alias, **inception_config(**incept_args))
+    else:
+        logger.info(f"Hab '{alias}' already exists, using...")
+    return hab
+
+def run_doers(doers: List[Doer], expire=0.0):
+    """Runs the verifier in a Doist until the specified expire time (in seconds)."""
+    tock = 0.03125
+    doist = doing.Doist(limit=expire, tock=tock, real=True)
+    doist.do(doers=doers)
+
+
+def setupDoers(
+        hby: Habery, hab: Hab, alias: str, http_port: int, hook: str, auth: str,
+        timeout: int = 10, retry: int = 3, direct: bool = True, incept_args: dict = None):
+    """
+    Parameters:
+        hby (Habery): identifier database environment
+        alias (str): alias of the identifier representing this agent
+        httpPort (int): external port to listen on for HTTP messages
+        hook (str): URL of external web hook to notify of credential issuance and revocations
+        auth (str): alias or AID of external authority for contacts and credentials
+        timeout (int): escrow timeout (in minutes) for events not delivered to upstream web hook
+        retry (int): retry delay (in seconds) for failed web hook attempts
+        direct (bool): listen for direct-mode messages on HTTP port or use indirect-mode mailbox
+        incept_args (dict): arguments for incepting Sally's identifier if it does not exist
+    """
+    hbyDoer = habbing.HaberyDoer(habery=hby)
+    obl = oobiing.Oobiery(hby=hby)
+
+    doers = [hbyDoer, *obl.doers]
+    doers += setup(hby, hab, alias=alias, httpPort=http_port, hook=hook, auth=auth, timeout=timeout,
+                   retry=retry, direct=direct)
+    return doers
+
+def setup(hby: Habery, hab: Hab, alias: str, httpPort: int, hook: str, auth: str, timeout=10,
+          retry=3, direct=True):
     """
     Setup components, HTTP endpoints, and MailboxDirector working with witnesses to receive events.
 
@@ -41,20 +97,10 @@ def setup(hby, *, alias, httpPort, hook, auth, timeout=10, retry=3, direct=True,
         timeout (int): escrow timeout (in minutes) for events not delivered to upstream web hook
         retry (int): retry delay (in seconds) for failed web hook attempts
         direct (bool): listen for direct-mode messages on HTTP port or use indirect-mode mailbox
-        incept_args (dict): arguments for incepting Sally's identifier if it does not exist
     """
     cues = decking.Deck()
-    # make hab
-    if incept_args is None:
-        incept_args = {}
-    hab = hby.habByName(name=alias)
     if hab is None:
-        if incept_args["incept_file"] is None:
-            raise ValueError("incept file by arg --incept-file is required to create a new identifier")
-        logger.info(f"Making new hab {alias} in Habery {incept_args.get('name', '')}")
-        hab = hby.makeHab(name=alias, **inception_config(**incept_args))
-    else:
-        logger.info(f"Hab '{alias}' already exists, using...")
+        raise ValueError(f"Identifier with alias '{alias}' does not exist. It must be created before starting Sally.")
 
     logger.info(f"Using hab {hab.name}:{hab.pre}")
     logger.info(f"\tCESR Qualifed Base64 Public Key:  {hab.kever.serder.verfers[0].qb64}")
@@ -96,7 +142,7 @@ def setup(hby, *, alias, httpPort, hook, auth, timeout=10, retry=3, direct=True,
 
     ending.loadEnds(app, hby=hby, default=hab.pre)
 
-    doers = [httpServerDoer, comms, tc]
+    doers: List[Doer] = [httpServerDoer, comms, tc]
     if direct:
         logger.info("Adding direct mode HTTP listener")
         # reading notifications for received ipex grant exn messages
@@ -105,7 +151,7 @@ def setup(hby, *, alias, httpPort, hook, auth, timeout=10, retry=3, direct=True,
         # Set up HTTP endpoint for PUT-ing application/cesr streams to the SallyAgent at '/'
         httpEnd = indirecting.HttpEnd(rxbs=parser.ims, mbx=mbx)
         app.add_route('/', httpEnd)
-        agent = VerificationAgent(hab=hab, parser=parser, kvy=kvy, tvy=tvy, rvy=rvy, exc=exc, cues=cues)
+        agent = VerificationAgent(hab=hab, parser=parser, kvy=kvy, tvy=tvy, rvy=rvy, verifier=verifier, exc=exc, cues=cues)
         doers.append(agent)
     else:
         logger.info("Adding indirect mode mailbox listener")
