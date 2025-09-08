@@ -3,11 +3,11 @@
 tests.db.dbing module
 
 """
-import lmdb
 import os
 
+import lmdb
 from keri.db import subing
-from keri.vc import proving
+
 from sally.core import basing
 
 

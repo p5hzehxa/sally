@@ -9,9 +9,7 @@ from base64 import urlsafe_b64decode as decodeB64
 
 from hio.help import Hict
 from http_sfv import Dictionary
-from keri import core
 from keri.app import habbing
-from keri.core import coring
 from keri.end import ending
 
 from sally.core import httping
