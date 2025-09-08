@@ -12,6 +12,7 @@ from keri.app.cli.common import existing
 
 import sally
 from sally import ogler, log_name, set_log_level
+from sally.app.bootstrapping import BootstrapRunner
 from sally.core import serving
 
 parser = argparse.ArgumentParser(description='Launch Sally vLEI credential presentation receiver service.')
@@ -99,6 +100,18 @@ def launch(args, expire=0.0):
         "incept_file": incept_file, "config_dir": config_dir
     }
 
+    hby = init_habery(name=name, base=base, bran=bran, config_file=config_file,
+                      config_dir=config_dir, salt=salt)
+    hab = serving.incept_if_new(hby, alias, incept_args)
+
+    # setup doers
+    doers = serving.setupDoers(hby, hab, alias=alias, http_port=http_port, hook=hook, auth=auth,
+                           timeout=timeout, retry=retry, direct=direct, incept_args=incept_args)
+    logger.info(f"Sally Server v{sally.__version__} listening on {http_port} with DB version {hby.db.version}")
+    serving.run_doers(doers)
+
+def init_habery(name, base, bran, config_file, config_dir, salt):
+    """Initialize or reopen the Habery (keystore)"""
     ks = keeping.Keeper(name=name, base=base, temp=False, reopen=True)
     aeid = ks.gbls.get('aeid')
 
@@ -109,17 +122,13 @@ def launch(args, expire=0.0):
                                     temp=False, reopen=True, clear=False)
         habery_cfg = dict()
         habery_cfg["salt"] = salt if salt else None # When None causes Habery to randomize salt
-        hby = habbing.Habery(name=name, base=base, bran=bran, cf=cf, **habery_cfg)
+        hby = habbing.Habery(name=name, base=base, bran=bran, cf=cf, ks=ks, **habery_cfg)
     else:
+        ks.close() # existing.setupHby reopens, so close here to avoid LMDB conflict.
         hby = existing.setupHby(name=name, base=base, bran=bran)
 
-    # setup doers
-    hbyDoer = habbing.HaberyDoer(habery=hby)
-    obl = oobiing.Oobiery(hby=hby)
-
-    doers = [hbyDoer, *obl.doers]
-    doers += serving.setup(hby, alias=alias, httpPort=http_port, hook=hook, auth=auth,
-                           timeout=timeout, retry=retry, direct=direct, incept_args=incept_args)
-
-    logger.info(f"Sally Server v{sally.__version__} listening on {http_port} with DB version {hby.db.version}")
-    directing.runController(doers=doers, expire=expire)
+    # Resolve OOBIs for the Habery and the new Hab
+    bootstrap_doist = doing.Doist(limit=0.0, tock=0.03125, real=True)
+    runner = BootstrapRunner(hby=hby, tymth=bootstrap_doist.tymen())
+    bootstrap_doist.do(doers=[runner])
+    return hby

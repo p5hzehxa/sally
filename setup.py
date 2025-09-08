@@ -80,7 +80,7 @@ setup(
     python_requires='>=3.12.3',
     install_requires=[
         # This version of KERIpy uses the GLEIF-IT/keripy v1.2.8 branch as of the exn message fix
-        'keri @ git+ssh://git@github.com/GLEIF-IT/keripy.git@e881c9522b9bd38c5d5d5ef04f4e231eb902c36a',
+        'keri @ git+https://github.com/GLEIF-IT/keripy.git@e881c9522b9bd38c5d5d5ef04f4e231eb902c36a',
         'hio==0.6.14',
         'multicommand==1.0.0',
         'blake3==0.4.1',
