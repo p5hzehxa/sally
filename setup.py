@@ -39,7 +39,7 @@ else:
 
 setup(
     name='sally',
-    version='1.0.2',  # also change in src/sally/__init__.py
+    version='1.0.3',  # also change in src/sally/__init__.py
     license='Apache-2.0',
     license_files=('LICENSE',),
     description='vLEI Audit Reporting API',
