@@ -1,6 +1,6 @@
 .PHONY: build-sally
 
-VERSION=1.0.2
+VERSION=1.0.4
 REGISTRY=gleif
 IMAGE=sally
 IMAGE_TAG=$(REGISTRY)/$(IMAGE):latest

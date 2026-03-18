@@ -128,7 +128,7 @@ def init_habery(name, base, bran, config_file, config_dir, salt):
         hby = existing.setupHby(name=name, base=base, bran=bran)
 
     # Resolve OOBIs for the Habery and the new Hab
-    bootstrap_doist = doing.Doist(limit=0.0, tock=0.03125, real=True)
+    bootstrap_doist = doing.Doist(limit=30.0, tock=0.03125, real=True)
     runner = BootstrapRunner(hby=hby, tymth=bootstrap_doist.tymen())
     bootstrap_doist.do(doers=[runner])
     return hby
