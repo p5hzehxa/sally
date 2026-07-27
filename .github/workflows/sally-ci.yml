@@ -33,7 +33,9 @@ jobs:
 
       - name: Install native dependencies
         if: runner.os == 'macOS'
-        run: brew install libsodium
+        run: |
+          brew install libsodium
+          echo "DYLD_FALLBACK_LIBRARY_PATH=$(brew --prefix libsodium)/lib" >> "$GITHUB_ENV"
         shell: bash
 
       - name: Install dependencies
