@@ -15,10 +15,10 @@ def test_baser():
     """
     Test Baser class
     """
-    baser = basing.CueBaser(reopen=True)  # default is to not reopen
+    baser = basing.CueBaser(reopen=True, temp=True)
     assert isinstance(baser, basing.CueBaser)
     assert baser.name == "cb"
-    assert baser.temp is False
+    assert baser.temp is True
     assert isinstance(baser.env, lmdb.Environment)
     assert baser.path.endswith("sally/db/cb")
     assert baser.env.path() == baser.path
@@ -32,5 +32,3 @@ def test_baser():
     assert isinstance(baser.ack, subing.SerderSuber)
 
     assert baser.env.stat()['entries'] == 7  # One for each DB above and then one for the version field, __version__
-
-

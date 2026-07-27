@@ -54,7 +54,8 @@ class CueBaser(dbing.LMDBer):
         # Database of senders of the presentation or revocation messages
         self.snd = subing.CesrSuber(db=self, subkey='snd.', klas=coring.Prefixer)
 
-        # presentations that are waiting for the credential to be received and parsed
+        # Presentations waiting for the grant's embedded ACDC and TEL state to
+        # finish verification.
         self.iss = subing.CesrSuber(db=self, subkey='iss.', klas=coring.Dater)
         # revocations that are waiting for the TEL event to be received and processed
         self.rev = subing.CesrSuber(db=self, subkey='rev.', klas=coring.Dater)

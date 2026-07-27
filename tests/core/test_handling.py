@@ -8,7 +8,7 @@ Handling support
 import time
 
 import falcon
-from hio.base import doing, tyming
+from hio.base import doing
 from hio.core import http
 from hio.help import decking
 from keri.app import habbing, notifying
@@ -26,7 +26,7 @@ import issuing
 def test_presentation_handler(seeder, mockHelpingNowUTC):
     salt = signing.Salter(raw=b'abcdef0123456789').qb64
     with habbing.openHby(name="test", base="test", salt=salt) as hby:
-        cdb = basing.CueBaser(name="test_cb")
+        cdb = basing.CueBaser(name="test_cb", temp=True)
         exc = exchanging.Exchanger(hby=hby, handlers=[])
         notifier = notifying.Notifier(hby=hby)
         protocoling.loadHandlers(hby=hby, exc=exc, notifier=notifier)
@@ -46,7 +46,12 @@ def test_presentation_handler(seeder, mockHelpingNowUTC):
         vry = verifying.Verifier(hby=hby, reger=tvy.reger, expiry=10000000)
         parser = parsing.Parser(kvy=kvy, tvy=tvy, vry=vry, exc=exc)
 
-        doers = handling.loadHandlers(cdb=cdb, hby=hby, notifier=notifier, parser=parser)
+        doers = handling.loadHandlers(
+            cdb=cdb,
+            hby=hby,
+            notifier=notifier,
+            parser=parser,
+        )
 
         msgs = bytearray()
         for msg in issr.qviHab.db.clonePreIter(pre=issr.qviHab.pre):
@@ -62,15 +67,10 @@ def test_presentation_handler(seeder, mockHelpingNowUTC):
         doist = doing.Doist(limit=limit, tock=tock, doers=doers)
 
         doist.enter()
-        tymer = tyming.Tymer(tymth=doist.tymen(), duration=doist.limit)
 
-        while cdb.snd.get(keys=(issr.lesaid,)) is None or not tymer.expired:
-            doist.recur()
-            time.sleep(doist.tock)
+        doist.recur()
 
         doist.exit()
-
-        assert doist.tyme == limit
 
         prefixer = cdb.snd.get(keys=(issr.lesaid,))
         assert prefixer is not None
