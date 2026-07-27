@@ -9,7 +9,7 @@ on:
 
 # Define environment variables
 env:
-  PYTHON_VERSION: "3.12.13"
+  PYTHON_VERSION: "3.12.10"
   PIP_CACHE_DIR: "~/.cache/pip" # Default for Linux, will adjust  for MacOS"
 
 jobs:
