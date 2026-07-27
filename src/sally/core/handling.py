@@ -49,9 +49,16 @@ def loadHandlers(cdb, hby, notifier, parser) -> List[Doer]:
         cdb (CueBaser): communication escrow database environment
         hby (Habery): identifier database environment (master keystore)
         notifier (Notifier): Notifications
-        parser (Parser): to parse and process each message referred to in an EXN message
+        parser (Parser): parser for the grant's embedded events and ACDC
     """
-    return [PresentationProofHandler(cdb=cdb, hby=hby, notifier=notifier, parser=parser)]
+    return [
+        PresentationProofHandler(
+            cdb=cdb,
+            hby=hby,
+            notifier=notifier,
+            parser=parser,
+        )
+    ]
 
 
 class PresentationProofHandler(doing.Doer):
@@ -66,6 +73,7 @@ class PresentationProofHandler(doing.Doer):
         Parameters:
             cdb (CueBaser): communication escrow database environment
             notifier(Notifier): to read notifications to processes exns
+            parser (Parser): parser for the grant's embedded events and ACDC
             **kwa (dict): keyword arguments passes to super Doer
 
         """
@@ -146,6 +154,8 @@ class PresentationProofHandler(doing.Doer):
                 exn, pathed = exchanging.cloneMessage(self.hby, said=said)
                 embeds = exn.ked['e']
 
+                # The grant is the final IPEX presentation frame. Materialize
+                # its embedded primary ACDC after the supporting stream.
                 for label in ("anc", "iss", "acdc"):
                     ked = embeds[label]
                     sadder = coring.Sadder(ked=ked)
@@ -279,7 +289,7 @@ class Communicator(doing.DoDoer):
 
     def processReceived(self, db, action):
         """
-        Prepare the appropriate payload for issuances or revocations based on schema type and send
+        Prepare the appropriate payload per issuance or revocation based on schema type and send
         the payload in a request to the webhook URL.
         """
 
@@ -330,7 +340,7 @@ class Communicator(doing.DoDoer):
             logger.info(f"ACK for credential {said} will be sent to {creder.issuer}")
             self.cdb.ack.rem(keys=(said,))
 
-    def escrowDo(self, tymth, tock=1.0):
+    def escrowDo(self, tymth, tock=1.0, temp=None, **opts):
         """ Process escrows of comms pipeline
 
         Steps involve:
@@ -345,6 +355,8 @@ class Communicator(doing.DoDoer):
             tymth (function): injected function wrapper closure returned by .tymen() of
                 Tymist instance. Calling tymth() returns associated Tymist .tyme.
             tock (float): injected initial tock value.  Default to 1.0 to slow down processing
+            temp (bool | None): injected temporary-resource mode
+            **opts (dict): additional scheduler options
 
         """
         # enter context

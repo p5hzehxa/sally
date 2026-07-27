@@ -134,7 +134,14 @@ def setup(hby: Habery, hab: Hab, alias: str, httpPort: int, hook: str, auth: str
     tvy.registerReplyRoutes(router=rvy.rtr)
     tc = TeveryCuery(cdb=cdb, reger=reger, cues=tvy.cues)
 
-    parser = parsing.Parser(framed=True, kvy=kvy, tvy=tvy, rvy=rvy, vry=verifier, exc=exc)
+    parser = parsing.Parser(
+        framed=True,
+        kvy=kvy,
+        tvy=tvy,
+        rvy=rvy,
+        vry=verifier,
+        exc=exc,
+    )
 
     comms = handling.Communicator(hby=hby, hab=hab, cdb=cdb, reger=reger,
                                   auth=auth, hook=hook, timeout=timeout, retry=retry)
@@ -146,7 +153,14 @@ def setup(hby: Habery, hab: Hab, alias: str, httpPort: int, hook: str, auth: str
     if direct:
         logger.info("Adding direct mode HTTP listener")
         # reading notifications for received ipex grant exn messages
-        doers.extend(handling.loadHandlers(cdb=cdb, hby=hby, notifier=notifier, parser=parser))
+        doers.extend(
+            handling.loadHandlers(
+                cdb=cdb,
+                hby=hby,
+                notifier=notifier,
+                parser=parser,
+            )
+        )
 
         # Set up HTTP endpoint for PUT-ing application/cesr streams to the SallyAgent at '/'
         httpEnd = indirecting.HttpEnd(rxbs=parser.ims, mbx=mbx)
@@ -159,7 +173,14 @@ def setup(hby: Habery, hab: Hab, alias: str, httpPort: int, hook: str, auth: str
             hby=hby, exc=exc, kvy=kvy, tvy=tvy, rvy=rvy, verifier=verifier, rep=rep,
             topics=["/receipt", "/replay", "/multisig", "/credential", "/delegate", "/challenge"])  # topics to listen for messages on
         # reading notifications for received ipex grant exn messages
-        doers.extend(handling.loadHandlers(cdb=cdb, hby=hby, notifier=notifier, parser=mbd.parser))
+        doers.extend(
+            handling.loadHandlers(
+                cdb=cdb,
+                hby=hby,
+                notifier=notifier,
+                parser=mbd.parser,
+            )
+        )
         doers.append(mbd)
 
     return doers
@@ -209,4 +230,3 @@ def inception_config(name=None, base=None, alias=None, bran=None, incept_file=No
     icp_args.est_only = False
     icp_args.data = None
     return incept.mergeArgsWithFile(icp_args).__dict__
-

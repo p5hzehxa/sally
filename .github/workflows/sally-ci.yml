@@ -9,7 +9,7 @@ on:
 
 # Define environment variables
 env:
-  PYTHON_VERSION: "3.12.8"
+  PYTHON_VERSION: "3.12.10"
   PIP_CACHE_DIR: "~/.cache/pip" # Default for Linux, will adjust  for MacOS"
 
 jobs:
@@ -18,18 +18,25 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ macos-13, ubuntu-latest ]
+        os: [ macos-15, ubuntu-latest ]
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Set up Python ${{ env.PYTHON_VERSION }}
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v7
         with:
           python-version: ${{ env.PYTHON_VERSION }}
           cache: 'pip' # Enable built-in pip caching
           cache-dependency-path: | 
             **/requirements.txt
             **/setup.py # catches changes in install_requires
+
+      - name: Install native dependencies
+        if: runner.os == 'macOS'
+        run: |
+          brew install libsodium
+          echo "DYLD_FALLBACK_LIBRARY_PATH=$(brew --prefix libsodium)/lib" >> "$GITHUB_ENV"
+        shell: bash
 
       - name: Install dependencies
         run: |
