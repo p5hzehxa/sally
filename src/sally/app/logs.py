@@ -1,3 +1,4 @@
+import copy
 import logging
 
 
@@ -17,6 +18,8 @@ class TruncatedFormatter(logging.Formatter):
         Format the log record with truncated module and function names.
         Ignores exceptions and logs an error if formatting fails.
         """
+        record = copy.copy(record)
+
         # Truncate module and funcName to first 'chars' characters
         mod_chars = 10  # number of spaces to truncate to
         fn_chars = 14  # number of spaces to truncate to

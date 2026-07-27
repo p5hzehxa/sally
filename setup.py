@@ -79,8 +79,8 @@ setup(
     ],
     python_requires='>=3.12.3',
     install_requires=[
-        'keri>=1.2.12,<1.3.0',
-        'hio>=0.6.14,<0.7.0',
+        'keri>=1.2.13,<1.3.0',
+        'hio>=0.6.19,<0.7.0',
         'multicommand>=1.0.0',
         'blake3==0.4.1',
         'falcon==4.0.2',

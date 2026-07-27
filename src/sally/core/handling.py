@@ -340,7 +340,7 @@ class Communicator(doing.DoDoer):
             logger.info(f"ACK for credential {said} will be sent to {creder.issuer}")
             self.cdb.ack.rem(keys=(said,))
 
-    def escrowDo(self, tymth, tock=1.0):
+    def escrowDo(self, tymth, tock=1.0, temp=None, **opts):
         """ Process escrows of comms pipeline
 
         Steps involve:
@@ -355,6 +355,8 @@ class Communicator(doing.DoDoer):
             tymth (function): injected function wrapper closure returned by .tymen() of
                 Tymist instance. Calling tymth() returns associated Tymist .tyme.
             tock (float): injected initial tock value.  Default to 1.0 to slow down processing
+            temp (bool | None): injected temporary-resource mode
+            **opts (dict): additional scheduler options
 
         """
         # enter context

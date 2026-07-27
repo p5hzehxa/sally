@@ -39,7 +39,7 @@ class VerificationAgent(doing.DoDoer):
         doers = [doing.doify(self.msgDo), doing.doify(self.escrowDo)]
         super().__init__(doers=doers, **opts)
 
-    def msgDo(self, tymth=None, tock=0.0):
+    def msgDo(self, tymth=None, tock=0.0, temp=None, **opts):
         """
         Processes incoming messages from the parser which triggers the KEL, TEL, Router, and Exchange
         message processor to process credential presentations.
@@ -53,7 +53,7 @@ class VerificationAgent(doing.DoDoer):
         done = yield from self.parser.parsator(local=True)
         return done
 
-    def escrowDo(self, tymth=None, tock=0.0):
+    def escrowDo(self, tymth=None, tock=0.0, temp=None, **opts):
         """
         Processes KEL, TEL, Router, and Exchange message processor escrows.
         This ensures that each component processes the messages parsed from the HttpEnd.
