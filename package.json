@@ -1,0 +1,14 @@
+{
+  "name": "sally-documentation",
+  "private": true,
+  "scripts": {
+    "build": "next build"
+  },
+  "dependencies": {
+    "marked": "15.0.12",
+    "next": "15.5.18",
+    "react": "19.1.5",
+    "react-dom": "19.1.5",
+    "sanitize-html": "2.17.0"
+  }
+}
