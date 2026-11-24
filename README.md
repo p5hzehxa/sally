@@ -16,15 +16,15 @@ for direct HTTP requests. The alternate is to use indirect mode by omitting `--d
 sally server start \
   --direct \
   --http 9723 \
-  --salt 0AD45YWdzWSwNREuAoitH_CC \
+  --salt REPLACE_WITH_RANDOM_SALT \
   --name sally \
   --alias sally \
   --config-dir scripts \
   --config-file sally.json \
   --incept-file sally-incept.json \
-  --passcode VVmRdBTe5YCyLMmYRqTAi \
+  --passcode REPLACE_WITH_PRIVATE_PASSCODE \
   --web-hook http://127.0.0.1:9923 \
-  --auth EMCRBKH4Kvj03xbEVzKmOIrg0sosqHUF9VG2vzT9ybzv \
+  --auth REPLACE_WITH_WEBHOOK_AUTH_TOKEN \
   --loglevel INFO
 ```
 
@@ -226,15 +226,15 @@ Example:
 sally server start \
   --direct \
   --http 9723 \
-  --salt 0AD45YWdzWSwNREuAoitH_CC \
+  --salt REPLACE_WITH_RANDOM_SALT \
   --name sally \
   --alias sally \
   --config-dir scripts \
   --config-file sally.json \
   --incept-file sally-incept.json \
-  --passcode VVmRdBTe5YCyLMmYRqTAi \
+  --passcode REPLACE_WITH_PRIVATE_PASSCODE \
   --web-hook http://127.0.0.1:9923 \
-  --auth EMCRBKH4Kvj03xbEVzKmOIrg0sosqHUF9VG2vzT9ybzv \
+  --auth REPLACE_WITH_WEBHOOK_AUTH_TOKEN \
   --loglevel INFO
 ```
 
@@ -252,21 +252,21 @@ for `Sally` though you can also run this command from a Python virtual environme
 You will need to adjust the paths in the commands below to point to the correct location of `keripy` or `sally` depending on what you use.
 
 ```bash
-kli init --name sally --passcode VVmRdBTe5YCyLMmYRqTAi --salt 0AD45YWdzWSwNREuAoitH_CC \
+kli init --name sally --passcode REPLACE_WITH_PRIVATE_PASSCODE --salt REPLACE_WITH_RANDOM_SALT \
   --config-dir scripts --config-file sally-habery.json
-kli incept --name sally --passcode VVmRdBTe5YCyLMmYRqTAi --alias sally \
+kli incept --name sally --passcode REPLACE_WITH_PRIVATE_PASSCODE --alias sally \
   --file /scripts/sally-incept.json
-kli oobi resolve --name sally --passcode VVmRdBTe5YCyLMmYRqTAi \
+kli oobi resolve --name sally --passcode REPLACE_WITH_PRIVATE_PASSCODE \
   --oobi-alias qvi --oobi http://127.0.0.1:5642/oobi/EHLWiN8Q617zXqb4Se4KfEGteHbn_way2VG5mcHYh5bm/witness/BBilc4-L3tFUnfM_wJr4S4OJanAv_VmF_dJNN6vkf2Ha
 ```
 
 Finally, you can start (and leave running) the Sally server with:
 
 ```bash
-sally server start --name sally --alias sally --passcode VVmRdBTe5YCyLMmYRqTAi \
+sally server start --name sally --alias sally --passcode REPLACE_WITH_PRIVATE_PASSCODE \
   --http 9723 \
   --web-hook http://127.0.0.1:9923 \
-  --auth EHOuGiHMxJShXHgSb6k_9pqxmRb8H-LT0R2hQouHp8pW
+  --auth REPLACE_WITH_WEBHOOK_AUTH_TOKEN
 ```
 
 If you require a sample web hook to receive the notifications from the Sally server one is provided in this repo.  You
@@ -334,15 +334,15 @@ The following command will start the Sally server with a new identifier and salt
 sally server start \
   --direct \
   --http 9723 \
-  --salt 0AD45YWdzWSwNREuAoitH_CC \
+  --salt REPLACE_WITH_RANDOM_SALT \
   --name sally \
   --alias sally \
   --config-dir scripts \
   --config-file sally.json \
   --incept-file sally-incept.json \
-  --passcode VVmRdBTe5YCyLMmYRqTAi \
+  --passcode REPLACE_WITH_PRIVATE_PASSCODE \
   --web-hook http://127.0.0.1:9923 \
-  --auth EMCRBKH4Kvj03xbEVzKmOIrg0sosqHUF9VG2vzT9ybzv \
+  --auth REPLACE_WITH_WEBHOOK_AUTH_TOKEN \
   --loglevel INFO
 ```
 
